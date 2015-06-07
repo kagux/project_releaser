@@ -1,0 +1,33 @@
+- hosts: localhost
+  sudo: yes
+  vars:
+    ruby_gemset: 'releaser'
+    rvm1_rubies: [ 'ruby-2.1.5' ]
+    rvm1_gpg_key_server: 'pgp.uni-mainz.de'
+    rvm1_rvm_check_for_updates: False
+    app_home_path: /vagrant
+    mysql_root_password: ''
+
+  pre_tasks:
+    - name: install packages
+      apt: name={{item}} state=present
+      with_items:
+        - git
+        - curl
+        - htop
+        - libyaml-dev
+
+  tasks:
+    - name: prepare application
+      shell: bash -lc "rvm use {{rvm1_rubies[0]}}@{{ruby_gemset}} --create && {{item}}"
+      sudo: no
+      args:
+        chdir: "{{app_home_path}}"
+      with_items:
+        - 'bundle install'
+
+  roles:
+    - rvm_io.rvm1-ruby
+    - role: kagux.dev_environment
+      dotfiles_repo: https://github.com/kagux/dotfiles.git
+      when: host_os_user == 'boris'

@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require 'project_releaser'
+
+ProjectReleaser.configure do |config|
+  config.logger = ProjectReleaser::Logger::ColoredConsole.new
+end
+
+ProjectReleaser::CLI.new.run
