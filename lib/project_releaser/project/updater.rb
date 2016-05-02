@@ -10,7 +10,7 @@ module ProjectReleaser
       def update
         logger.info 'updating local release and develop branches'
         @git.returning_to_current_branch do |git|
-          git.pull [:master, :staging]
+          git.pull [:master, :develop]
         end
       end
     end

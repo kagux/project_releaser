@@ -24,8 +24,8 @@ module ProjectReleaser
       end
 
       def merge_branches
-        logger.info "merging 'staging' into 'master'"
-        @git.merge :master, :staging 
+        logger.info "merging 'develop' into 'master'"
+        @git.merge :master, :develop
       end
 
       def push_release(version)
@@ -36,7 +36,7 @@ module ProjectReleaser
       def branches
         @branches ||=begin
           branches = [:master]
-          branches += [:staging] if @git.has_branch? :staging
+          branches += [:develop] if @git.has_branch? :develop
           branches
         end
       end

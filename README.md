@@ -11,7 +11,7 @@ Running `project release` in the root of your project:
 Please, refer to [Usage](#usage) section for more commands and examples.
 
 Currently branches are not configurable:
-* development is `staging`
+* development is `develop`
 * release is `master`
 
 ## Installation
@@ -35,8 +35,8 @@ Available commands:
 
   * `version`   Current production version of the project
   * `name`      Project name
-  * `update`    Updates master and staging branches from all reomtes
-  * `release`   Merges staging into master and pushes master with new version
+  * `update`    Updates master and develop branches from all reomtes
+  * `release`   Merges develop into master and pushes master with new version
 
 
 ### Release Command
