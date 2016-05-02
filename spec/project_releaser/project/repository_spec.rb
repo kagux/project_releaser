@@ -60,7 +60,13 @@ describe ProjectReleaser::Project::Repository do
 
       it 'returns default version when there are none' do
         allow(git).to receive(:tags).and_return([])
-        expect(subject.current_version).to eq :major => 0, :minor => 0, :patch => 0
+        expect(subject.current_version).to eq :major => 1, :minor => 0, :patch => 0
+      end
+
+      it 'returns default version when there are no valid tags' do
+        tag = double 'tag', :name => 'random tag'
+        allow(git).to receive(:tags).and_return([tag])
+        expect(subject.current_version).to eq :major => 1, :minor => 0, :patch => 0
       end
     end
 

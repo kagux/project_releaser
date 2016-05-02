@@ -6,7 +6,7 @@ module ProjectReleaser
       class MissingBranch < RuntimeError; end;
 
       VERSION_PARTS = %I(major minor patch)
-      DEFAULT_VERSION = [0, 0, 0]
+      DEFAULT_VERSION = [1, 0, 0]
 
       def initialize(repo_path)
         @git = open_repository(repo_path)
@@ -80,10 +80,12 @@ module ProjectReleaser
       def versions
         tags = @git.tags
         return [DEFAULT_VERSION] if tags.empty?
+        valid_tags = tags
+                    .map(&:name)
+                    .select{ |n| n.start_with? 'v' }
 
-        tags
-          .map(&:name)
-          .select{ |n| n.start_with? 'v' }
+        return [DEFAULT_VERSION] if valid_tags.empty?
+        valid_tags
           .map{ |n| n.sub('v', '').split('.').map(&:to_i) }
           .map{ |a| a.fill(0, a.size..2) }
           .sort
