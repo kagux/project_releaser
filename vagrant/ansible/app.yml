@@ -2,7 +2,7 @@
   sudo: yes
   vars:
     ruby_gemset: 'releaser'
-    rvm1_rubies: [ 'ruby-2.1.5' ]
+    rvm1_rubies: [ 'ruby-2.2.4' ]
     rvm1_gpg_key_server: 'pgp.uni-mainz.de'
     rvm1_rvm_check_for_updates: False
     app_home_path: /vagrant
