@@ -1,0 +1,16 @@
+Documentation:
+    Enabled: false
+Metrics/LineLength:
+  Max: 120
+Metrics/MethodLength:
+  Max: 1000
+Metrics/ClassLength:
+  Max: 99999
+Style/SignalException:
+  AutoCorrect: false
+Style/SpecialGlobalVars:
+  AutoCorrect: false
+Lint/UnusedBlockArgument:
+  AutoCorrect: false
+Lint/UnusedMethodArgument:
+  AutoCorrect: false
