@@ -82,7 +82,7 @@ module ProjectReleaser
         return [DEFAULT_VERSION] if tags.empty?
         valid_tags = tags
                     .map(&:name)
-                    .select{ |n| n.start_with? 'v' }
+                    .select{ |n| n =~ /\Av?\d+(\.\d+){1,2}\z/ }
 
         return [DEFAULT_VERSION] if valid_tags.empty?
         valid_tags

@@ -24,11 +24,10 @@ describe ProjectReleaser::Project::Repository do
         expect(subject.current_version).to eq :major => 1, :minor => 2, :patch => 4
       end
 
-      it 'ignores tags that dont start with v' do
-        tag_1 = double 'tag', :name => 'v1.2.3'
-        tag_2 = double 'tag', :name => '1.2.4'
-        allow(git).to receive(:tags).and_return([tag_1, tag_2])
-        expect(subject.current_version).to eq :major => 1, :minor => 2, :patch => 3
+      it 'supports version without v prefix' do
+        tag = double 'tag', :name => '1.2.8'
+        allow(git).to receive(:tags).and_return([tag])
+        expect(subject.current_version).to eq :major => 1, :minor => 2, :patch => 8
       end
 
       it 'recognizes partial versions' do
@@ -66,6 +65,13 @@ describe ProjectReleaser::Project::Repository do
       it 'returns default version when there are no valid tags' do
         tag = double 'tag', :name => 'random tag'
         allow(git).to receive(:tags).and_return([tag])
+        expect(subject.current_version).to eq :major => 1, :minor => 0, :patch => 0
+      end
+
+      it 'ignores tags that do not match semantic versioning and returns default one' do
+        tag_1 = double 'tag', :name => 'g1.2.3'
+        tag_2 = double 'tag', :name => 'random string'
+        allow(git).to receive(:tags).and_return([tag_1, tag_2])
         expect(subject.current_version).to eq :major => 1, :minor => 0, :patch => 0
       end
     end
