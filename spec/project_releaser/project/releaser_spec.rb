@@ -18,7 +18,7 @@ describe ProjectReleaser::Project::Releaser do
     subject.release 'v2.3.5'
   end
 
-  it 'doesnt pull and skips merging when there is no staging branch' do
+  it 'doesnt pull and skips merging when there is no develop branch' do
     allow(yielded_repository).to receive(:has_branch?).with(:develop).and_return(false)
     expect(yielded_repository).to receive(:pull).with([:master]).ordered
     expect(yielded_repository).not_to receive(:merge)
