@@ -1,5 +1,6 @@
 require 'git'
 require 'ostruct'
+require 'project_releaser/version'
 require 'project_releaser/logger/loggable'
 require 'project_releaser/logger/console'
 require 'project_releaser/logger/colored_console'
