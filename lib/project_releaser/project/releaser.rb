@@ -26,11 +26,13 @@ module ProjectReleaser
       def merge_branches
         logger.info "merging 'develop' into 'master'"
         @git.merge :master, :develop
+        logger.info "merging back 'master' into 'develop'"
+        @git.merge :develop, :master
       end
 
       def push_release(version)
         logger.info "pushing new release `#{version}` to 'master'"
-        @git.push :master, version 
+        @git.push :master, version
       end
 
       def branches
