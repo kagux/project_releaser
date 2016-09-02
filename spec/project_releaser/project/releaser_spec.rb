@@ -13,6 +13,7 @@ describe ProjectReleaser::Project::Releaser do
     allow(yielded_repository).to receive(:has_branch?).with(:develop).and_return(true)
     expect(yielded_repository).to receive(:pull).with([:master, :develop]).ordered
     expect(yielded_repository).to receive(:merge).with(:master, :develop).ordered
+    expect(yielded_repository).to receive(:merge).with(:develop, :master).ordered
     expect(yielded_repository).to receive(:push).with(:master, 'v2.3.5').ordered
 
     subject.release 'v2.3.5'
