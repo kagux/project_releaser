@@ -56,7 +56,7 @@ module ProjectReleaser
       end
 
       def checkout(branch)
-        @git.checkout branch 
+        @git.checkout branch
       rescue Git::GitExecuteError
         raise MissingBranch, "Branch '#{branch}' is missing"
       end
