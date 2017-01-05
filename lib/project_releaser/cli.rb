@@ -34,7 +34,7 @@ module ProjectReleaser
       command :version do |c|
         c.syntax = 'project version'
         c.description = 'Current version of the project'
-        action c do 
+        action c do
           logger.info "Current version of '#{project.name}' is #{project.current_version}"
         end
       end
@@ -44,7 +44,7 @@ module ProjectReleaser
       command :name do |c|
         c.syntax = 'project name'
         c.description = 'Infer project name from git remotes'
-        action c do 
+        action c do
           logger.info "You are working on project '#{project.name}'"
         end
       end
@@ -54,7 +54,7 @@ module ProjectReleaser
       command :update do |c|
         c.syntax = 'project update'
         c.description = 'Updates release and develop branches from all remotes'
-        action c do 
+        action c do
           ProjectReleaser::Project.update
         end
       end
@@ -64,7 +64,7 @@ module ProjectReleaser
       command :release do |c|
         c.syntax = 'project release'
         c.description = 'Merges develop into release and pushes it with new version tag'
-        action c do |args, options|
+        action c do |args, _options|
           ProjectReleaser::Project.release args.first
         end
       end
@@ -74,9 +74,9 @@ module ProjectReleaser
       ProjectReleaser::Project
     end
 
-    def action(cmd, &block)
+    def action(cmd)
       proc = lambda do |args, options|
-        block.call args, options
+        yield args, options
         logger.info '`Done!`'
       end
       cmd.action(&proc)

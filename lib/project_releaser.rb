@@ -20,6 +20,6 @@ module ProjectReleaser
   end
 
   def configuration
-    @configuration ||= OpenStruct.new 
+    @configuration ||= OpenStruct.new
   end
-end 
+end

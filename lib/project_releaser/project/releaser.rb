@@ -19,7 +19,7 @@ module ProjectReleaser
       private
 
       def update_local_branches
-        logger.info "updating local branches"
+        logger.info 'updating local branches'
         @git.pull branches
       end
 
@@ -36,7 +36,7 @@ module ProjectReleaser
       end
 
       def branches
-        @branches ||=begin
+        @branches ||= begin
           branches = [:master]
           branches += [:develop] if @git.has_branch? :develop
           branches

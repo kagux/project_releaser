@@ -78,4 +78,3 @@ describe ProjectReleaser::Project::Info do
     end
   end
 end
-

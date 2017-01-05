@@ -19,7 +19,7 @@ module ProjectReleaser
       end
 
       def next_version(version_type = :patch)
-        version_type = (version_type ||= :patch).to_sym
+        version_type = (version_type || :patch).to_sym
         return exact_version(version_type) unless valid_version_part? version_type
 
         new_version = @git.current_version
@@ -29,12 +29,10 @@ module ProjectReleaser
       end
 
       private
+
       def exact_version(version)
-        if version =~ /\Av{0,1}\d+\.\d+\.\d+\Z/
-          return version.to_s.prepend('v').sub('vv', 'v')
-        else
-          raise ArgumentError
-        end
+        raise ArgumentError unless version =~ /\Av{0,1}\d+\.\d+\.\d+\Z/
+        version.to_s.prepend('v').sub('vv', 'v')
       end
 
       def valid_version_part?(version)
@@ -48,7 +46,7 @@ module ProjectReleaser
       def reset_lesser_versions(full_version, cutoff_version)
         keys = full_version.keys
         index = keys.index cutoff_version
-        Hash[ full_version.map{|k, v| keys.index(k) <= index ? [k, v] : [k, 0]} ]
+        Hash[full_version.map { |k, v| keys.index(k) <= index ? [k, v] : [k, 0] }]
       end
     end
   end

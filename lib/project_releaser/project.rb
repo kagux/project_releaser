@@ -27,7 +27,8 @@ module ProjectReleaser
       info.next_version version_type
     end
 
-    private 
+    private
+
     def info
       Info.new(git)
     end

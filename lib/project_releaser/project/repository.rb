@@ -1,12 +1,12 @@
 module ProjectReleaser
   module Project
     class Repository
-      class RepositoryHasNoBranches < RuntimeError; end;
-      class RepositoryNotFound < RuntimeError; end;
-      class MissingBranch < RuntimeError; end;
+      class RepositoryHasNoBranches < RuntimeError; end
+      class RepositoryNotFound < RuntimeError; end
+      class MissingBranch < RuntimeError; end
 
-      VERSION_PARTS = %I(major minor patch)
-      DEFAULT_VERSION = [1, 0, 0]
+      VERSION_PARTS = %I(major minor patch).freeze
+      DEFAULT_VERSION = [1, 0, 0].freeze
 
       def initialize(repo_path)
         @git = open_repository(repo_path)
@@ -20,7 +20,7 @@ module ProjectReleaser
         branches.each do |branch|
           checkout branch
           @git.remotes.each do |remote|
-            @git.fetch remote.name #otherwise it wouldnt get new tags...
+            @git.fetch remote.name # otherwise it wouldnt get new tags...
             @git.pull remote.name, branch
           end
         end
@@ -41,18 +41,18 @@ module ProjectReleaser
         @git.add_tag version_name
         @git.remotes.each do |r|
           @git.push r.name, branch
-          @git.push r.name, version_name 
+          @git.push r.name, version_name
         end
       end
 
       def remotes
-        Hash[@git.remotes.map{ |r| [r.name, r.url] }]
+        Hash[@git.remotes.map { |r| [r.name, r.url] }]
       end
 
       def current_branch
         raise RepositoryHasNoBranches unless @git.branches.count > 0
 
-        @git.branches.find { |b| b.current }.name
+        @git.branches.find(&:current).name
       end
 
       def checkout(branch)
@@ -62,32 +62,32 @@ module ProjectReleaser
       end
 
       def fetch_tags
-        @git.remotes.each { |r| @git.fetch(r.name, :tags => true) }
+        @git.remotes.each { |r| @git.fetch(r.name, tags: true) }
       end
 
       def has_branch?(branch_name)
         @git.branches.map(&:name).include? branch_name.to_s
       end
 
-      def returning_to_current_branch(&block)
+      def returning_to_current_branch
         branch = current_branch
         yield self
         checkout branch
       end
 
-      private 
+      private
 
       def versions
         tags = @git.tags
         return [DEFAULT_VERSION] if tags.empty?
         valid_tags = tags
-                    .map(&:name)
-                    .select{ |n| n =~ /\Av?\d+(\.\d+){1,2}\z/ }
+        .map(&:name)
+        .select { |n| n =~ /\Av?\d+(\.\d+){1,2}\z/ }
 
         return [DEFAULT_VERSION] if valid_tags.empty?
         valid_tags
-          .map{ |n| n.sub('v', '').split('.').map(&:to_i) }
-          .map{ |a| a.fill(0, a.size..2) }
+          .map { |n| n.sub('v', '').split('.').map(&:to_i) }
+          .map { |a| a.fill(0, a.size..2) }
           .sort
       end
 
@@ -99,3 +99,4 @@ module ProjectReleaser
     end
   end
 end
+
