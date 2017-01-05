@@ -117,14 +117,15 @@ describe ProjectReleaser::Project::Repository do
     end
 
     describe '#push' do
-      it 'tags with provided version and pushes to all remotes urls' do
+      it 'tags with provided version and pushes only to origin remote url' do
         remote = double 'remote url', name: 'some_origin'
-        allow(git).to receive(:remotes).and_return([remote])
+        origin = double 'remote url', name: 'origin'
+        allow(git).to receive(:remotes).and_return([origin, remote])
 
         expect(git).to receive(:checkout).with(:branch).ordered
         expect(git).to receive(:add_tag).with('v1.0.0')
-        expect(git).to receive(:push).with('some_origin', :branch).ordered
-        expect(git).to receive(:push).with('some_origin', 'v1.0.0').ordered
+        expect(git).to receive(:push).with('origin', :branch).ordered
+        expect(git).to receive(:push).with('origin', 'v1.0.0').ordered
 
         subject.push :branch, 'v1.0.0'
       end

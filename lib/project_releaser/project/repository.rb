@@ -39,10 +39,8 @@ module ProjectReleaser
       def push(branch, version_name)
         checkout branch
         @git.add_tag version_name
-        @git.remotes.each do |r|
-          @git.push r.name, branch
-          @git.push r.name, version_name
-        end
+        @git.push 'origin', branch
+        @git.push 'origin', version_name
       end
 
       def remotes
