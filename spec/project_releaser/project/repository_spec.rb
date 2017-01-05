@@ -7,7 +7,7 @@ describe ProjectReleaser::Project::Repository do
 
   it 'raises exception if directory has no git repository' do
     allow(Git).to receive(:open).with(dir).and_raise(ArgumentError)
-    expect{subject}.to raise_error ProjectReleaser::Project::Repository::RepositoryNotFound
+    expect { subject }.to raise_error ProjectReleaser::Project::Repository::RepositoryNotFound
   end
 
   context 'when dir has repository' do
@@ -15,72 +15,70 @@ describe ProjectReleaser::Project::Repository do
       allow(Git).to receive(:open).with(dir).and_return(git)
     end
 
-
     describe '#current_version' do
       it 'takes version from last tag' do
-        tag_1 = double 'tag', :name => 'v1.2.3'
-        tag_2 = double 'tag', :name => 'v1.2.4'
+        tag_1 = double 'tag', name: 'v1.2.3'
+        tag_2 = double 'tag', name: 'v1.2.4'
         allow(git).to receive(:tags).and_return([tag_1, tag_2])
-        expect(subject.current_version).to eq :major => 1, :minor => 2, :patch => 4
+        expect(subject.current_version).to eq major: 1, minor: 2, patch: 4
       end
 
       it 'supports version without v prefix' do
-        tag = double 'tag', :name => '1.2.8'
+        tag = double 'tag', name: '1.2.8'
         allow(git).to receive(:tags).and_return([tag])
-        expect(subject.current_version).to eq :major => 1, :minor => 2, :patch => 8
+        expect(subject.current_version).to eq major: 1, minor: 2, patch: 8
       end
 
       it 'recognizes partial versions' do
-        tag = double 'tag', :name => 'v1.2'
+        tag = double 'tag', name: 'v1.2'
         allow(git).to receive(:tags).and_return([tag])
-        expect(subject.current_version).to eq :major => 1, :minor => 2, :patch => 0
+        expect(subject.current_version).to eq major: 1, minor: 2, patch: 0
       end
 
       it 'sorts tags by patch version' do
-        tag_1 = double 'tag', :name => 'v1.2.10'
-        tag_2 = double 'tag', :name => 'v1.2.2'
+        tag_1 = double 'tag', name: 'v1.2.10'
+        tag_2 = double 'tag', name: 'v1.2.2'
         allow(git).to receive(:tags).and_return([tag_1, tag_2])
-        expect(subject.current_version).to eq :major => 1, :minor => 2, :patch => 10
+        expect(subject.current_version).to eq major: 1, minor: 2, patch: 10
       end
 
       it 'sorts tags by minor version' do
-        tag_1 = double 'tag', :name => 'v1.10.2'
-        tag_2 = double 'tag', :name => 'v1.2.2'
+        tag_1 = double 'tag', name: 'v1.10.2'
+        tag_2 = double 'tag', name: 'v1.2.2'
         allow(git).to receive(:tags).and_return([tag_1, tag_2])
-        expect(subject.current_version).to eq :major => 1, :minor => 10, :patch => 2
+        expect(subject.current_version).to eq major: 1, minor: 10, patch: 2
       end
 
       it 'sorts tags by patch version' do
-        tag_1 = double 'tag', :name => 'v0.2.2'
-        tag_2 = double 'tag', :name => 'v1.2.2'
+        tag_1 = double 'tag', name: 'v0.2.2'
+        tag_2 = double 'tag', name: 'v1.2.2'
         allow(git).to receive(:tags).and_return([tag_1, tag_2])
-        expect(subject.current_version).to eq :major => 1, :minor => 2, :patch => 2
+        expect(subject.current_version).to eq major: 1, minor: 2, patch: 2
       end
 
       it 'returns default version when there are none' do
         allow(git).to receive(:tags).and_return([])
-        expect(subject.current_version).to eq :major => 1, :minor => 0, :patch => 0
+        expect(subject.current_version).to eq major: 1, minor: 0, patch: 0
       end
 
       it 'returns default version when there are no valid tags' do
-        tag = double 'tag', :name => 'random tag'
+        tag = double 'tag', name: 'random tag'
         allow(git).to receive(:tags).and_return([tag])
-        expect(subject.current_version).to eq :major => 1, :minor => 0, :patch => 0
+        expect(subject.current_version).to eq major: 1, minor: 0, patch: 0
       end
 
       it 'ignores tags that do not match semantic versioning and returns default one' do
-        tag_1 = double 'tag', :name => 'g1.2.3'
-        tag_2 = double 'tag', :name => 'random string'
+        tag_1 = double 'tag', name: 'g1.2.3'
+        tag_2 = double 'tag', name: 'random string'
         allow(git).to receive(:tags).and_return([tag_1, tag_2])
-        expect(subject.current_version).to eq :major => 1, :minor => 0, :patch => 0
+        expect(subject.current_version).to eq major: 1, minor: 0, patch: 0
       end
     end
 
-
-    describe '#pull' do 
+    describe '#pull' do
       it 'updates provided branches from remote urls' do
-        remote_1 = double 'remote url', :name => 'remote_1'
-        remote_2 = double 'remote url', :name => 'remote_2'
+        remote_1 = double 'remote url', name: 'remote_1'
+        remote_2 = double 'remote url', name: 'remote_2'
 
         allow(git).to receive(:remotes).and_return([remote_1, remote_2])
 
@@ -100,7 +98,6 @@ describe ProjectReleaser::Project::Repository do
       end
     end
 
-
     describe '#merge' do
       it 'merges two branches' do
         expect(git).to receive(:checkout).with(:branch_1).ordered
@@ -119,10 +116,9 @@ describe ProjectReleaser::Project::Repository do
       end
     end
 
-
     describe '#push' do
       it 'tags with provided version and pushes to all remotes urls' do
-        remote = double 'remote url', :name => 'some_origin'
+        remote = double 'remote url', name: 'some_origin'
         allow(git).to receive(:remotes).and_return([remote])
 
         expect(git).to receive(:checkout).with(:branch).ordered
@@ -136,8 +132,8 @@ describe ProjectReleaser::Project::Repository do
 
     describe '#remotes' do
       it 'returns hash with remote names and urls' do
-        remote_1 = double 'remote url', :name => 'remote_1', :url => 'url_1'
-        remote_2 = double 'remote url', :name => 'remote_2', :url => 'url_2'
+        remote_1 = double 'remote url', name: 'remote_1', url: 'url_1'
+        remote_2 = double 'remote url', name: 'remote_2', url: 'url_2'
 
         allow(git).to receive(:remotes).and_return([remote_1, remote_2])
 
@@ -145,12 +141,11 @@ describe ProjectReleaser::Project::Repository do
       end
     end
 
-
     describe '#current_branch' do
       it 'returns current repository branch name' do
-        branch_1 = double 'git branch', :name => 'my_feature 1', :current => false
-        branch_2 = double 'git branch', :name => 'my_feature 2', :current => true
-        branch_3 = double 'git branch', :name => 'my_feature 3', :current => false
+        branch_1 = double 'git branch', name: 'my_feature 1', current: false
+        branch_2 = double 'git branch', name: 'my_feature 2', current: true
+        branch_3 = double 'git branch', name: 'my_feature 3', current: false
         allow(git).to receive(:branches).and_return([branch_1, branch_2, branch_3])
 
         expect(subject.current_branch).to eq 'my_feature 2'
@@ -159,7 +154,7 @@ describe ProjectReleaser::Project::Repository do
       it 'raises exception of repository has no branches' do
         allow(git).to receive(:branches).and_return([])
 
-        expect{subject.current_branch}.to raise_error ProjectReleaser::Project::Repository::RepositoryHasNoBranches
+        expect { subject.current_branch }.to raise_error ProjectReleaser::Project::Repository::RepositoryHasNoBranches
       end
     end
 
@@ -172,31 +167,31 @@ describe ProjectReleaser::Project::Repository do
 
       it 'raises exception if the branch is missing' do
         allow(git).to receive(:checkout).with(:branch).and_raise(Git::GitExecuteError)
-        expect{subject.checkout :branch}.to raise_error ProjectReleaser::Project::Repository::MissingBranch
+        expect { subject.checkout :branch }.to raise_error ProjectReleaser::Project::Repository::MissingBranch
       end
     end
 
     describe '#fetch_tags' do
       it 'fetches tags from all remotes' do
-        remote_1 = double 'remote url', :name => 'remote_1'
-        remote_2 = double 'remote url', :name => 'remote_2'
+        remote_1 = double 'remote url', name: 'remote_1'
+        remote_2 = double 'remote url', name: 'remote_2'
         allow(git).to receive(:remotes).and_return([remote_1, remote_2])
 
-        expect(git).to receive(:fetch).with('remote_1', :tags => true)
-        expect(git).to receive(:fetch).with('remote_2', :tags => true)
+        expect(git).to receive(:fetch).with('remote_1', tags: true)
+        expect(git).to receive(:fetch).with('remote_2', tags: true)
 
         subject.fetch_tags
       end
     end
 
     describe '#has_branch' do
-      let(:branch) {double 'git branch', :name => 'the_branch'}
+      let(:branch) { double 'git branch', name: 'the_branch' }
       before :each do
         allow(git).to receive(:branches).and_return([branch])
       end
 
       it 'returns true if branch exists' do
-        expect(subject.has_branch?(:the_branch)).to be_truthy 
+        expect(subject.has_branch?(:the_branch)).to be_truthy
       end
 
       it 'returns false if branch exists' do
@@ -206,8 +201,8 @@ describe ProjectReleaser::Project::Repository do
 
     describe '#returning_to_current_branch' do
       let(:git) { double('git').as_null_object }
-      let(:tmp_branch) { double 'git branch', :name => :tmp_branch, :current => false }
-      let(:current_branch) { double 'git branch', :name => :current_branch, :current => true }
+      let(:tmp_branch) { double 'git branch', name: :tmp_branch, current: false }
+      let(:current_branch) { double 'git branch', name: :current_branch, current: true }
 
       before :each do
         allow(Git).to receive(:open).with(dir).and_return(git)
@@ -222,7 +217,7 @@ describe ProjectReleaser::Project::Repository do
 
       it 'checks out current branch after yielding block' do
         subject.returning_to_current_branch do
-          #change current branch to something else
+          # change current branch to something else
           allow(current_branch).to receive(:current).and_return(false)
           allow(tmp_branch).to receive(:current).and_return(true)
 
